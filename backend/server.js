@@ -43,6 +43,7 @@ app.get('/', (req, res) => {
 //jwt authentication 
 function authenticateToken(req, res, next) {
     const token = req.cookies.token || req.headers['authorization']?.split(' ')[1];
+    console.log(token)
 
     if (!token) {
         console.log("Access denied. No token provided.");
@@ -126,13 +127,14 @@ app.post('/login', async (req, res) => {
     try {
       // Find the user by username
       const user = await User.findOne({ userName });
+      console.log(user)
       if (!user) {
         return res.status(404).json({ message: 'Username does not exist' });
       }
   
       // Check if the password is correct
       
-      if (password==user.password) {
+      if (password!==user.password) {
         return res.status(400).json({ message: 'Invalid password' });
       }
   
@@ -180,9 +182,11 @@ app.get('/products', async (req, res) => {
   });
 
 
-  app.get('/getcart', async (req, res) => {
+  app.get('/getcart', authenticateToken, async (req, res) => {
+    const userId = req.user.userId; // Get userId from the token
+  
     try {
-      const cartItems = await Cart.find().populate('productId');
+      const cartItems = await Cart.find({ userId }).populate('productId'); // Filter by userId
       const formattedItems = cartItems.map(item => ({
         id: item._id,
         productId: item.productId._id,
@@ -198,19 +202,20 @@ app.get('/products', async (req, res) => {
     }
   });
 
-  app.post('/postcart', async (req, res) => {
+  
+  app.post('/postcart', authenticateToken, async (req, res) => {
     const { productId, quantity } = req.body;
-    console.log(req.body)
+    const userId = req.user.userId; // Get userId from the token
+    console.log(userId)
   
     try {
-      let cartItem = await Cart.findOne({ id:productId });
-      console.log(cartItem)
+      let cartItem = await Cart.findOne({ productId, userId }); // Include userId in the query
   
       if (cartItem) {
         cartItem.quantity += quantity;
         await cartItem.save();
       } else {
-        cartItem = new Cart({ productId, quantity });
+        cartItem = new Cart({ productId, quantity, userId }); // Include userId when creating a new cart item
         await cartItem.save();
       }
   
@@ -220,16 +225,13 @@ app.get('/products', async (req, res) => {
     }
   });
 
-  app.put('/cart', async (req, res) => {
-    console.log('hi')
-    const { itemId } = req.body;
-    const { quantity } = req.body;
-    console.log(req.params)
-    console.log(req.body)
-
+  
+  app.put('/cart', authenticateToken, async (req, res) => {
+    const { itemId, quantity } = req.body;
+    const userId = req.user.userId; // Get userId from the token
   
     try {
-      const cartItem = await Cart.findById(itemId);
+      const cartItem = await Cart.findOne({ _id: itemId, userId }); // Include userId in the query
       if (!cartItem) return res.status(404).json({ message: 'Cart item not found' });
   
       cartItem.quantity = quantity;
@@ -241,11 +243,13 @@ app.get('/products', async (req, res) => {
     }
   });
 
-  app.delete('/cart/:id', async (req, res) => {
+  
+  app.delete('/cart/:id', authenticateToken, async (req, res) => {
     const { id } = req.params;
+    const userId = req.user.userId; // Get userId from the token
   
     try {
-      const cartItem = await Cart.findByIdAndDelete(id);
+      const cartItem = await Cart.findOneAndDelete({ _id: id, userId }); // Include userId in the query
       if (!cartItem) return res.status(404).json({ message: 'Cart item not found' });
   
       res.json({ message: 'Cart item removed' });
@@ -253,6 +257,7 @@ app.get('/products', async (req, res) => {
       res.status(500).json({ message: error.message });
     }
   });
+  
 
   
   

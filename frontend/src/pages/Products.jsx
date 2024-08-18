@@ -1,9 +1,7 @@
-import React from 'react';
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Box, SimpleGrid, Image, Text, Button, Select, Flex, Icon, useDisclosure, Center } from '@chakra-ui/react';
 import { FaFilter } from 'react-icons/fa';
 import { MdSentimentDissatisfied } from 'react-icons/md';
-import axios from 'axios';
 import brand1 from '../assets/brand1.png';
 import brand2 from '../assets/brand2.png';
 import brand3 from '../assets/brand3.png';
@@ -15,6 +13,9 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import image from '../assets/all.png';
 import ProductModal from '../components/ProductModal';
+import Cookies from 'js-cookie'
+
+
 
 const brandImages = [
   { src: brand1, name: 'Lenovo' },
@@ -25,7 +26,10 @@ const brandImages = [
   { src: image, name: '' },
 ];
 
+
+
 export const Products = () => {
+  const authToken=Cookies.get('authToken')
   const [products, setProducts] = useState([]);
   const [cart, setCart] = useState({});
   const [priceFilter, setPriceFilter] = useState('');
@@ -40,8 +44,9 @@ export const Products = () => {
 
   const fetchProducts = async () => {
     try {
-      const response = await axios.get('https://shopbag-n1j1.onrender.com/products');
-      setProducts(response.data);
+      const response = await fetch('http://localhost:3000/products');
+      const data = await response.json();
+      setProducts(data);
     } catch (error) {
       console.error('Error fetching products:', error);
     }
@@ -49,8 +54,23 @@ export const Products = () => {
 
   const fetchCart = async () => {
     try {
-      const response = await axios.get('https://shopbag-n1j1.onrender.com/getcart');
-      const cartItems = response.data.reduce((acc, item) => {
+      const response = await fetch('http://localhost:3000/getcart', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${authToken}`
+        },
+        credentials: 'include'
+      });
+      
+      if (response.status === 401) {
+        toast.error('Session expired, please log in again.');
+        // Optionally redirect to login page
+        return;
+      }
+  
+      const data = await response.json();
+      const cartItems = data.reduce((acc, item) => {
         acc[item.productId] = item.quantity;
         return acc;
       }, {});
@@ -59,22 +79,48 @@ export const Products = () => {
       console.error('Error fetching cart:', error);
     }
   };
-
+  
   const handleAddToCart = async (productId) => {
     try {
+      if (!authToken) {
+        toast.error('You must be logged in to add items to the cart.');
+        // Optionally redirect to login page
+        return;
+      }
+  
       if (cart[productId]) {
         toast.info('Product already in Cart');
       } else {
-        await axios.post('https://shopbag-n1j1.onrender.com/postcart', { productId, quantity: 1 });
-        setCart((prevCart) => ({ ...prevCart, [productId]: (prevCart[productId] || 0) + 1 }));
-        toast.success('Added to cart');
+        const response = await fetch('http://localhost:3000/postcart', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${authToken}`
+          },
+          body: JSON.stringify({ productId, quantity: 1 }),
+          credentials: 'include'
+        });
+  
+        if (response.status === 401) {
+          toast.error('Session expired, please log in again.');
+          // Optionally redirect to login page
+          return;
+        }
+  
+        if (response.ok) {
+          setCart((prevCart) => ({ ...prevCart, [productId]: (prevCart[productId] || 0) + 1 }));
+          toast.success('Added to cart');
+        } else {
+          toast.error('Failed to add to cart');
+        }
       }
     } catch (error) {
       console.error('Error adding to cart:', error);
       toast.error('Failed to add to cart');
     }
   };
-
+  
+  
   const handleBrandClick = (brandName) => {
     setBrandFilter(brandName);
   };

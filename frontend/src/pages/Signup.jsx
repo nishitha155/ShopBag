@@ -9,7 +9,7 @@ import AuthForm from '../components/AuthForm';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-axios.defaults.baseURL = 'https://shopbag-n1j1.onrender.com/';
+axios.defaults.baseURL = 'http://localhost:3000/';
 
 export const Signup = () => {
   const navigate = useNavigate();

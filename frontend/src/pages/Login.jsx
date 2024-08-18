@@ -10,7 +10,7 @@ import Cookies from 'js-cookie';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-axios.defaults.baseURL = 'https://shopbag-n1j1.onrender.com/';
+axios.defaults.baseURL = 'http://localhost:3000/';
 
 export const Login = () => {
   const navigate = useNavigate();
@@ -70,7 +70,7 @@ export const Login = () => {
     try {
       const response = await axios.post('/login', formData);
       const { token } = response.data;
-      Cookies.set('jwt', token, { expires: 7 });
+      Cookies.set('authToken', token, { expires: 7 });
       toast({
         title: 'Login successful.',
         description: "You've been logged in.",
