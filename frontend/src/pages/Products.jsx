@@ -44,7 +44,7 @@ export const Products = () => {
 
   const fetchProducts = async () => {
     try {
-      const response = await fetch('http://localhost:3000/products');
+      const response = await fetch('https://shopbag-n1j1.onrender.com/products');
       const data = await response.json();
       setProducts(data);
     } catch (error) {
@@ -54,7 +54,7 @@ export const Products = () => {
 
   const fetchCart = async () => {
     try {
-      const response = await fetch('http://localhost:3000/getcart', {
+      const response = await fetch('https://shopbag-n1j1.onrender.com/getcart', {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -91,7 +91,7 @@ export const Products = () => {
       if (cart[productId]) {
         toast.info('Product already in Cart');
       } else {
-        const response = await fetch('http://localhost:3000/postcart', {
+        const response = await fetch('https://shopbag-n1j1.onrender.com/postcart', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

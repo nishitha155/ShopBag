@@ -66,7 +66,7 @@ export const Cart = () => {
 
   const fetchCart = async () => {
     try {
-      const response = await axios.get('http://localhost:3000/getcart', {
+      const response = await axios.get('https://shopbag-n1j1.onrender.com/getcart', {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -88,7 +88,7 @@ export const Cart = () => {
         return; // Stop further execution if the quantity is greater than 10
       }
 
-      await axios.put(`http://localhost:3000/cart`, { itemId, quantity }, {
+      await axios.put(`https://shopbag-n1j1.onrender.com/cart`, { itemId, quantity }, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -105,7 +105,7 @@ export const Cart = () => {
 
   const handleRemoveItem = async (itemId) => {
     try {
-      await axios.delete(`http://localhost:3000/cart/${itemId}`, {
+      await axios.delete(`https://shopbag-n1j1.onrender.com/cart/${itemId}`, {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',
