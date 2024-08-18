@@ -21,7 +21,7 @@ app.use(bodyParser.json());
 const cors = require('cors');
 // const { mailTransport, generateEmailTemplate, plainEmailTemplate } = require('./utils/mail');
 const corsOptions = {
-  origin: 'https://shop-bag--psi.vercel.app',
+  origin: 'https://shop-bag-nine.vercel.app',
   credentials: true,
 };
 app.use(cors(corsOptions));
