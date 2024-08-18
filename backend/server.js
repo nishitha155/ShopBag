@@ -1,6 +1,6 @@
 
 const express = require('express');
-const bcrypt = require('bcrypt');
+
 const jwt = require('jsonwebtoken');
 const dotenv = require('dotenv');
 const bodyParser = require('body-parser');
@@ -75,9 +75,9 @@ app.post('/register', async (req, res) => {
         return res.status(400).json({ message: 'User already exists' });
       }
       const saltRounds = 10;
-      const hashedPassword = await bcrypt.hash(password, saltRounds);
+      
       const user = new User({
-        password: hashedPassword,
+        password,
         email,
         fullName,
         userName,
@@ -131,8 +131,8 @@ app.post('/login', async (req, res) => {
       }
   
       // Check if the password is correct
-      const isMatch = await bcrypt.compare(password, user.password);
-      if (!isMatch) {
+      
+      if (password==user.password) {
         return res.status(400).json({ message: 'Invalid password' });
       }
   
