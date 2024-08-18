@@ -10,6 +10,16 @@
 - Install dependencies: `npm install`
 - Run the server: `npm start`
 
+## Features
+- User login and signup with jwt authentication
+- Products list with price filter and brand filter
+- Add to Cart functionality with complete error handling
+- Quantity adjustment, invalid qunatity, deleting from cart, discounts in cart page
+- Dedicated counter for cart in navbar
+- Checkout button
+- Usage of animations 
+- Completely responsive
+
 
 
 ## Video Demonstration
