@@ -132,7 +132,7 @@ app.post('/login', async (req, res) => {
   
       // Check if the password is correct
       
-      if (password==user.password) {
+      if (password===user.password) {
         return res.status(400).json({ message: 'Invalid password' });
       }
   
