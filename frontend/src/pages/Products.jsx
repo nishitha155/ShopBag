@@ -40,7 +40,7 @@ export const Products = () => {
 
   const fetchProducts = async () => {
     try {
-      const response = await axios.get('/products');
+      const response = await axios.get('https://shopbag-n1j1.onrender.com/products');
       setProducts(response.data);
     } catch (error) {
       console.error('Error fetching products:', error);
@@ -49,7 +49,7 @@ export const Products = () => {
 
   const fetchCart = async () => {
     try {
-      const response = await axios.get('/getcart');
+      const response = await axios.get('https://shopbag-n1j1.onrender.com/getcart');
       const cartItems = response.data.reduce((acc, item) => {
         acc[item.productId] = item.quantity;
         return acc;
@@ -65,7 +65,7 @@ export const Products = () => {
       if (cart[productId]) {
         toast.info('Product already in Cart');
       } else {
-        await axios.post('/postcart', { productId, quantity: 1 });
+        await axios.post('https://shopbag-n1j1.onrender.com/postcart', { productId, quantity: 1 });
         setCart((prevCart) => ({ ...prevCart, [productId]: (prevCart[productId] || 0) + 1 }));
         toast.success('Added to cart');
       }

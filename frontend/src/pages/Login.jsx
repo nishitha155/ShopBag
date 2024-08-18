@@ -10,7 +10,7 @@ import Cookies from 'js-cookie';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-axios.defaults.baseURL = 'http://localhost:3000/';
+axios.defaults.baseURL = 'https://shopbag-n1j1.onrender.com/';
 
 export const Login = () => {
   const navigate = useNavigate();

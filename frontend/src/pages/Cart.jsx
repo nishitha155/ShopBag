@@ -52,7 +52,7 @@ export const Cart = () => {
 
   const fetchCart = async () => {
     try {
-      const response = await axios.get('/getcart');
+      const response = await axios.get('https://shopbag-n1j1.onrender.com/getcart');
       setCartItems(response.data);
     } catch (error) {
       console.error('Error fetching cart:', error);
@@ -67,7 +67,7 @@ export const Cart = () => {
         return; // Stop further execution if the quantity is greater than 10
       }
   
-      await axios.put(`/cart`, { itemId, quantity });
+      await axios.put(`https://shopbag-n1j1.onrender.com/cart`, { itemId, quantity });
       fetchCart();
     } catch (error) {
       console.error('Error updating quantity:', error);
@@ -78,7 +78,7 @@ export const Cart = () => {
 
   const handleRemoveItem = async (itemId) => {
     try {
-      await axios.delete(`/cart/${itemId}`);
+      await axios.delete(`https://shopbag-n1j1.onrender.com/cart/${itemId}`);
       fetchCart();
       toast.success('Item removed from cart');
     } catch (error) {
@@ -177,7 +177,7 @@ export const Cart = () => {
           </Link>
         </VStack>
       </Box>
-      <Footer />
+      
     </>
   );
 };
